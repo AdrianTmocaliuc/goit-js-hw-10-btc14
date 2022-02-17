@@ -17,21 +17,21 @@ refs.input.addEventListener('input', debounce(searchCountries, 300));
 function searchCountries(e) {
   const inputText = e.target.value.trim();
 
-  if (inputText === '') clearAll();
+  if (inputText === '') {
+    return clearAll();
+  }
 
   fetchCountries(inputText)
     .then(res => {
+      clearAll();
       if (res.length > 10) {
-        clearAll();
         return Notify.info('Too many matches found. Please enter a more specific name.');
-      } else if (2 <= res.length && res.length <= 10) {
-        clearAll();
-        return renderListMarkup(res);
-      } else {
-        clearAll();
-
-        return renderCountryMarkup(res);
       }
+      if (2 <= res.length && res.length <= 10) {
+        return renderListMarkup(res);
+      }
+
+      return renderCountryMarkup(res);
     })
     .catch(err => {
       clearAll();
